@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Productos - My LocalMarket</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #2e8b57; /* Verde LocalMarket */
+      --secondary-color: #f4a261;
+    }
+    body {
+      background-color: #f8f9fa;
+    }
+    .navbar,.dropdown-item {
+      background-color: var(--primary-color) !important;
+    }
+    .navbar-brand, .nav-link, .dropdown-item {
+      color: #fff !important;
+    }
+    .card-producto {
+      transition: transform 0.2s;
+    }
+    .card-producto:hover {
+      transform: scale(1.02);
+    }
+    footer {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+ <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="../index.html">🛒 My LocalMarket</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="../index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" href="./tiendas.html">Tiendas</a></li>
+          <li class="nav-item"><a class="nav-link" href="./productos.html">Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="../cliente/carritoSimulado.html">Carrito</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Cuenta</a>
+            <ul class="dropdown-menu dropdown-menu-end" id="menuCuenta">
+                <li><a class="dropdown-item" href="../auth/login.html">Login</a></li>
+                <li><a class="dropdown-item" href="../auth/registro.html">Registro</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-light text-center py-5">
+    <h1 class="display-5 fw-bold text-success">🛍️ Productos</h1>
+    <p class="lead text-muted">Explora todos nuestros productos y apoya a los comercios locales.</p>
+    <div class="input-group w-50 mx-auto mt-3">
+      <input type="text" class="form-control" id="buscadorProductos" placeholder="Buscar productos...">
+      <button class="btn btn-success" onclick="filtrarProductos()">Buscar</button>
+    </div>
+  </header>
+
+  <!-- SECCIÓN DE PRODUCTOS -->
+  <section class="container my-5">
+    <div class="row g-4" id="listaProductos">
+      <!-- Las tarjetas de productos se generarán desde JS -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 My LocalMarket — Hecho con ❤️ para los comercios locales</p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Datos de ejemplo de productos
+    const productos = [
+      { nombre: "Pan integral", descripcion: "Pan fresco y saludable.", precio: 2.5, imagen: "https://via.placeholder.com/300x200" },
+      { nombre: "Manzanas rojas", descripcion: "Frutas locales y frescas.", precio: 3.2, imagen: "https://via.placeholder.com/300x200" },
+      { nombre: "Carne de res", descripcion: "Corte selecto y fresco.", precio: 12.99, imagen: "https://via.placeholder.com/300x200" },
+      { nombre: "Libro 'Aprender JS'", descripcion: "Manual completo de JavaScript.", precio: 19.9, imagen: "https://via.placeholder.com/300x200" },
+      { nombre: "Café arábica", descripcion: "Café de origen local.", precio: 5.5, imagen: "https://via.placeholder.com/300x200" },
+      { nombre: "Pan de chocolate", descripcion: "Dulce y delicioso.", precio: 3.0, imagen: "https://via.placeholder.com/300x200" }
+    ];
+
+    const contenedorProductos = document.getElementById('listaProductos');
+
+    function mostrarProductos(lista) {
+      contenedorProductos.innerHTML = '';
+      lista.forEach(producto => {
+        const col = document.createElement('div');
+        col.className = 'col-md-3';
+        col.innerHTML = `
+          <div class="card card-producto">
+            <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}">
+            <div class="card-body">
+              <h5 class="card-title">${producto.nombre}</h5>
+              <p class="card-text">${producto.descripcion}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-success">€${producto.precio.toFixed(2)}</span>
+                <button class="btn btn-sm btn-outline-success" onclick="addToCart('${producto.nombre}', ${producto.precio})">Añadir</button>
+              </div>
+            </div>
+          </div>
+        `;
+        contenedorProductos.appendChild(col);
+      });
+    }
+
+    // Inicialmente mostramos todos los productos
+    mostrarProductos(productos);
+
+    // Función de búsqueda
+    function filtrarProductos() {
+      const filtro = document.getElementById('buscadorProductos').value.toLowerCase();
+      const filtrados = productos.filter(producto =>
+        producto.nombre.toLowerCase().includes(filtro) ||
+        producto.descripcion.toLowerCase().includes(filtro)
+      );
+      mostrarProductos(filtrados);
+    }
+
+    // Filtrado en tiempo real mientras escribes
+    document.getElementById('buscadorProductos').addEventListener('input', filtrarProductos);
+
+    // Función de añadir al carrito
+    function addToCart(nombre, precio) {
+      let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+      const existente = carrito.find(p => p.nombre === nombre);
+      if (existente) {
+        existente.cantidad += 1;
+      } else {
+        carrito.push({ nombre, precio, cantidad: 1 });
+      }
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+      alert('Producto añadido al carrito 🛒');
+    }
+
+    // Gestión de usuario activo
+    const user = JSON.parse(localStorage.getItem('usuarioActivo'));
+    const menu = document.getElementById('menuCuenta');
+    if (user) {
+      menu.innerHTML = `
+        <li><a class="dropdown-item" href="auth/perfil.html">Perfil (${user.nombre})</a></li>
+        <li><a class="dropdown-item" href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+      `;
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem('usuarioActivo');
+      alert("👋 Sesión cerrada.");
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>
