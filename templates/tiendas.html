@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Tiendas - Yusop{% endblock %}
+
+{% block content %}
+<header class="bg-light text-center py-5">
+    <h1 class="display-5 fw-bold text-success">🏪 Tiendas locales</h1>
+    <p class="lead text-muted">Explora las tiendas de tu zona y apoya al comercio local.</p>
+    <div class="input-group w-50 mx-auto mt-3">
+        <input type="text" class="form-control" id="buscadorTiendas" placeholder="Buscar tiendas...">
+    </div>
+</header>
+
+<section class="container my-5">
+    <div class="row g-4" id="listaTiendas">
+        {% for tienda in tiendas %}
+        <div class="col-md-4 card-tienda-wrapper">
+            <div class="card card-tienda" data-nombre="{{ tienda.nombre|lower }}" data-descripcion="{{ tienda.descripcion|lower }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ tienda.nombre }}</h5>
+                    <p class="card-text">{{ tienda.descripcion }}</p>
+                    <a href="{% url 'ver_tienda' tienda.id %}" class="btn btn-success btn-sm">Ver tienda</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('buscadorTiendas').addEventListener('input', function() {
+    const filtro = this.value.toLowerCase();
+    document.querySelectorAll('.card-tienda-wrapper').forEach(wrapper => {
+        const nombre = wrapper.querySelector('.card-tienda').dataset.nombre;
+        const descripcion = wrapper.querySelector('.card-tienda').dataset.descripcion;
+        wrapper.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}

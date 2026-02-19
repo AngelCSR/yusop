@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Panel Admin - Yusop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">📦 Gestión de Productos</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Añadir producto</button>
+    </form>
+
+    <table class="table table-striped align-middle mt-4">
+        <thead class="table-success">
+            <tr>
+                <th>Nombre</th>
+                <th>Precio (€)</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.precio|floatformat:2 }}</td>
+                <td>{{ producto.categoria }}</td>
+                <td>
+                    <a href="{% url 'editar_producto' producto.id %}" class="btn btn-sm btn-warning">✏️</a>
+                    <a href="{% url 'borrar_producto' producto.id %}" class="btn btn-sm btn-danger">🗑️</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

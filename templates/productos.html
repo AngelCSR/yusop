@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Productos - Yusop{% endblock %}
+
+{% block content %}
+
+<header class="bg-light text-center py-5">
+  <h1 class="display-5 fw-bold text-success">🛍️ Productos</h1>
+  <p class="lead text-muted">Explora todos nuestros productos y apoya a los comercios locales.</p>
+  <div class="input-group w-50 mx-auto mt-3">
+    <input type="text" class="form-control" id="buscadorProductos" placeholder="Buscar productos...">
+  </div>
+</header>
+
+<section class="container my-5">
+  <div class="row g-4" id="listaProductos">
+    {% for producto in productos %}
+      <div class="col-md-3 card-producto-wrapper">
+        <div class="card card-producto" data-nombre="{{ producto.nombre|lower }}" data-descripcion="{{ producto.descripcion|lower }}">
+          <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ producto.nombre }}</h5>
+            <p class="card-text">{{ producto.descripcion }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-bold text-success">€{{ producto.precio|floatformat:2 }}</span>
+              
+              <!-- BOTÓN que manda a la view para agregar al carrito -->
+              <form action="{% url 'agregar_carrito' producto.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="cantidad" value="1">
+                <button type="submit" class="btn btn-sm btn-outline-success">
+                  Añadir
+                </button>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+// Búsqueda dinámica: solo oculta/mostrar cards
+document.getElementById('buscadorProductos').addEventListener('input', function() {
+  const filtro = this.value.toLowerCase();
+  document.querySelectorAll('.card-producto-wrapper').forEach(wrapper => {
+    const nombre = wrapper.querySelector('.card-producto').dataset.nombre;
+    const descripcion = wrapper.querySelector('.card-producto').dataset.descripcion;
+    if(nombre.includes(filtro) || descripcion.includes(filtro)) {
+      wrapper.style.display = '';
+    } else {
+      wrapper.style.display = 'none';
+    }
+  });
+});
+</script>
+
+{% endblock %}
+<!--         alert(nombre + " añadido al carrito."); -->
