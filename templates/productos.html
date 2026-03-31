@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block title %}Productos - Yusop{% endblock %}
 
 {% block content %}
 
-<header class="bg-light text-center py-5">
+<header class="bg-light text-center py-5 rounded shadow-sm">
   <h1 class="display-5 fw-bold text-success">🛍️ Productos</h1>
   <p class="lead text-muted">Explora todos nuestros productos y apoya a los comercios locales.</p>
   <div class="input-group w-50 mx-auto mt-3">
@@ -15,15 +17,20 @@
   <div class="row g-4" id="listaProductos">
     {% for producto in productos %}
       <div class="col-md-3 card-producto-wrapper">
-        <div class="card card-producto" data-nombre="{{ producto.nombre|lower }}" data-descripcion="{{ producto.descripcion|lower }}">
-          <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
-          <div class="card-body">
-            <h5 class="card-title">{{ producto.nombre }}</h5>
-            <p class="card-text">{{ producto.descripcion }}</p>
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="fw-bold text-success">€{{ producto.precio|floatformat:2 }}</span>
+        <div class="card card-producto h-100 shadow-sm" 
+             data-nombre="{{ producto.nombre_producto|lower }}" 
+             data-descripcion="{{ producto.descripcion_producto|lower }}">
+          
+          <img src="{% if producto.imagen_producto %}{{ producto.imagen_producto.url }}{% else %}{% static 'img/no-image.png' %}{% endif %}" 
+               class="card-img-top" alt="{{ producto.nombre_producto }}">
+          
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold">{{ producto.nombre_producto }}</h5>
+            <p class="card-text text-muted small">{{ producto.descripcion_producto|truncatechars:80 }}</p>
+            
+            <div class="mt-auto d-flex justify-content-between align-items-center">
+              <span class="fw-bold text-success">{{ producto.precio_producto|floatformat:2 }}€</span>
               
-              <!-- BOTÓN que manda a la view para agregar al carrito -->
               <form action="{% url 'agregar_carrito' producto.id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="cantidad" value="1">
@@ -31,10 +38,13 @@
                   Añadir
                 </button>
               </form>
-
             </div>
           </div>
         </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5">
+          <p class="text-muted">Aún no hay productos disponibles. ¡Vuelve pronto!</p>
       </div>
     {% endfor %}
   </div>
@@ -43,22 +53,15 @@
 {% endblock %}
 
 {% block scripts %}
-
 <script>
-// Búsqueda dinámica: solo oculta/mostrar cards
 document.getElementById('buscadorProductos').addEventListener('input', function() {
   const filtro = this.value.toLowerCase();
   document.querySelectorAll('.card-producto-wrapper').forEach(wrapper => {
-    const nombre = wrapper.querySelector('.card-producto').dataset.nombre;
-    const descripcion = wrapper.querySelector('.card-producto').dataset.descripcion;
-    if(nombre.includes(filtro) || descripcion.includes(filtro)) {
-      wrapper.style.display = '';
-    } else {
-      wrapper.style.display = 'none';
-    }
+    const card = wrapper.querySelector('.card-producto');
+    const nombre = card.dataset.nombre;
+    const descripcion = card.dataset.descripcion;
+    wrapper.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? '' : 'none';
   });
 });
 </script>
-
 {% endblock %}
-<!--         alert(nombre + " añadido al carrito."); -->

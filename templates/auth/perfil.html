@@ -7,6 +7,16 @@
         <div class="col-md-6">
             <div class="card mt-5 p-4">
                 <h3 class="text-center text-success mb-4">Perfil de usuario</h3>
+                <div class="text-center mb-4">
+                    {% if user.avatar_usuario %}
+                        <img src="{{ user.avatar_usuario.url }}" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light rounded-circle d-inline-block p-4">
+                            <span class="display-4">👤</span>
+                        </div>
+                    {% endif %}
+                    <h4 class="mt-2">{{ user.first_name }}</h4>
+                </div>
                 <form method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
