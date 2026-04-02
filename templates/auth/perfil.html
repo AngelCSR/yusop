@@ -2,19 +2,66 @@
 {% block title %}Perfil - Yusop{% endblock %}
 
 {% block content %}
+
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card mt-5 p-4">
-                <h3 class="text-center text-success mb-4">Perfil de usuario</h3>
+        <div class="col-md-7">
+
+            <!-- PERFIL -->
+            <div class="card mt-5 p-4 shadow">
+                <h3 class="text-center text-success mb-4">👤 Perfil de usuario</h3>
+
                 <form method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" class="btn btn-success w-100">Guardar cambios</button>
+
+                    <button type="submit" name="guardar_perfil" class="btn btn-success w-100">
+                        Guardar cambios
+                    </button>
                 </form>
-                <a href="{% url 'logout' %}" class="btn btn-secondary w-100 mt-3">Cerrar sesión</a>
+
+                <a href="{% url 'logout' %}" class="btn btn-secondary w-100 mt-3">
+                    Cerrar sesión
+                </a>
             </div>
+
+            <!-- TIENDA -->
+            <div class="card mt-4 p-4 shadow">
+
+                {% if tienda %}
+                    <!-- SI EXISTE TIENDA -->
+                    <h4 class="text-center text-success mb-3"> Mi tienda</h4>
+
+                    <div class="card p-3">
+                        <img src="{{ tienda.avatar_tienda.url|default:'/media/tienda.png' }}"
+                             class="img-fluid mb-2"
+                             style="max-height:200px;object-fit:cover;">
+
+                        <h5>{{ tienda.nombre_tienda }}</h5>
+                        <p>{{ tienda.descripcion_tienda }}</p>
+
+                        <p><strong>Estado:</strong> {{ tienda.estado_tienda }}</p>
+                    </div>
+
+                {% else %}
+                    <!-- SI NO EXISTE -->
+                    <h4 class="text-center text-success mb-3">Crear tienda</h4>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ tienda_form.as_p }}
+
+                        <button type="submit" name="crear_tienda" class="btn btn-success w-100">
+                            Crear tienda
+                        </button>
+                    </form>
+
+                {% endif %}
+
+            </div>
+
         </div>
     </div>
 </div>
+
 {% endblock %}

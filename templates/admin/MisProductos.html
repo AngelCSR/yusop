@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Panel Admin - Yusop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Gestión de Productos</h2>
+
+    <!-- FORMULARIO CREAR PRODUCTO -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Añadir producto</button>
+    </form>
+
+    <!-- LISTADO DE PRODUCTOS -->
+    <table class="table table-striped align-middle mt-4">
+        <thead class="table-success">
+            <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Precio (€)</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <!-- IMAGEN -->
+                <td>
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre_producto }}" style="height:50px;object-fit:cover;">
+                    {% else %}
+                        <img src="/media/default.png" alt="{{ producto.nombre_producto }}" style="height:50px;object-fit:cover;">
+                    {% endif %}
+                </td>
+
+                <!-- DATOS DEL PRODUCTO -->
+                <td>{{ producto.nombre_producto }}</td>
+                <td>{{ producto.precio_producto|floatformat:2 }}</td>
+                <td>{{ producto.stock_producto }}</td>
+                <td>{{ producto.estado_producto }}</td>
+
+                <!-- ACCIONES -->
+                <td>
+                    <a href="{% url 'editar_producto' producto.id_producto %}" class="btn btn-sm btn-warning">✏️</a>
+                    <a href="{% url 'borrar_producto' producto.id_producto %}" class="btn btn-sm btn-danger">🗑️</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

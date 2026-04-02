@@ -1,32 +1,85 @@
 {% extends "base.html" %}
-{% block title %}{{ producto.nombre }} - Yusop{% endblock %}
+{% block title %}{{ producto.nombre_producto }} - Yusop{% endblock %}
 
 {% block content %}
 
 <section class="container my-5">
-  <div class="row">
-    <!-- Imagen del producto -->
+  <div class="row g-4">
+
+    <!-- IMAGEN -->
     <div class="col-md-6">
-      <img src="{{ producto.imagen.url }}" class="img-fluid rounded" alt="{{ producto.nombre }}">
+      {% if producto.imagen %}
+        <img src="{{ producto.imagen.url }}" class="img-fluid rounded shadow">
+      {% else %}
+        <img src="/media/default.png" class="img-fluid rounded shadow">
+      {% endif %}
     </div>
 
-    <!-- Detalles del producto -->
+    <!-- DETALLES -->
     <div class="col-md-6">
-      <h1 class="text-success">{{ producto.nombre }}</h1>
-      <p class="text-muted">{{ producto.descripcion }}</p>
-      <h3 class="fw-bold text-success">€{{ producto.precio|floatformat:2 }}</h3>
 
-      <!-- FORMULARIO para agregar al carrito -->
-      <form action="{% url 'agregar_carrito' producto.id %}" method="post" class="mt-3">
-        {% csrf_token %}
-        <div class="mb-2">
-          <label for="cantidad" class="form-label">Cantidad:</label>
-          <input type="number" name="cantidad" id="cantidad" class="form-control" value="1" min="1" style="width: 100px;">
+      <h1 class="text-success">{{ producto.nombre_producto }}</h1>
+
+      <!-- TIENDA -->
+      {% if producto.id_tienda %}
+        <p class="text-muted">
+          Vendido por: 
+          <strong>{{ producto.id_tienda.nombre_tienda }}</strong>
+        </p>
+      {% endif %}
+
+      <!-- DESCRIPCIÓN -->
+      <p class="mt-3">{{ producto.descripcion_producto }}</p>
+
+      <!-- PRECIO -->
+      <h2 class="fw-bold text-success">
+        €{{ producto.precio_producto|floatformat:2 }}
+      </h2>
+
+      <hr>
+
+      <!-- INFO EXTRA -->
+      <ul class="list-group mb-3">
+        <li class="list-group-item">
+           Stock: {{ producto.stock_producto }}
+        </li>
+
+        <li class="list-group-item">
+           Estado: 
+          <span class="
+            {% if producto.estado_producto == 'disponible' %}
+              text-success
+            {% elif producto.estado_producto == 'pausado' %}
+              text-warning
+            {% else %}
+              text-danger
+            {% endif %}
+          ">
+            {{ producto.estado_producto }}
+          </span>
+        </li>
+      </ul>
+
+      <!-- FORMULARIO CARRITO -->
+      {% if producto.estado_producto == 'disponible' and producto.stock_producto > 0 %}
+        <form action="{% url 'agregar_carrito' producto.id_producto %}" method="post">
+          {% csrf_token %}
+
+          <div class="mb-2">
+            <label class="form-label">Cantidad:</label>
+            <input type="number" name="cantidad" class="form-control"
+                   value="1" min="1" max="{{ producto.stock_producto }}" style="width: 120px;">
+          </div>
+
+          <button type="submit" class="btn btn-success w-100">
+             Añadir al carrito
+          </button>
+        </form>
+      {% else %}
+        <div class="alert alert-danger">
+          Producto no disponible
         </div>
-        <button type="submit" class="btn btn-success">
-          🛒 Añadir al carrito
-        </button>
-      </form>
+      {% endif %}
 
     </div>
   </div>

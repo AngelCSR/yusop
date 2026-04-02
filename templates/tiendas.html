@@ -2,9 +2,11 @@
 {% block title %}Tiendas - Yusop{% endblock %}
 
 {% block content %}
+
 <header class="bg-light text-center py-5">
-    <h1 class="display-5 fw-bold text-success">🏪 Tiendas locales</h1>
+    <h1 class="display-5 fw-bold text-success"> Tiendas locales</h1>
     <p class="lead text-muted">Explora las tiendas de tu zona y apoya al comercio local.</p>
+
     <div class="input-group w-50 mx-auto mt-3">
         <input type="text" class="form-control" id="buscadorTiendas" placeholder="Buscar tiendas...">
     </div>
@@ -12,29 +14,80 @@
 
 <section class="container my-5">
     <div class="row g-4" id="listaTiendas">
+
         {% for tienda in tiendas %}
         <div class="col-md-4 card-tienda-wrapper">
-            <div class="card card-tienda" data-nombre="{{ tienda.nombre|lower }}" data-descripcion="{{ tienda.descripcion|lower }}">
+
+            <div class="card h-100 shadow card-tienda"
+                 data-nombre="{{ tienda.nombre_tienda|lower }}"
+                 data-descripcion="{{ tienda.descripcion_tienda|lower }}">
+
+                <!-- IMAGEN -->
+                {% if tienda.avatar_tienda %}
+                    <img src="{{ tienda.avatar_tienda.url }}" class="card-img-top" style="height:200px;object-fit:cover;">
+                {% else %}
+                    <img src="/media/tienda.png" class="card-img-top" style="height:200px;object-fit:cover;">
+                {% endif %}
+
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ tienda.nombre }}</h5>
-                    <p class="card-text">{{ tienda.descripcion }}</p>
-                    <a href="{% url 'ver_tienda' tienda.id %}" class="btn btn-success btn-sm">Ver tienda</a>
+
+                    <!-- NOMBRE -->
+                    <h5 class="card-title">{{ tienda.nombre_tienda }}</h5>
+
+                    <!-- DESCRIPCIÓN -->
+                    <p class="card-text text-muted">
+                        {{ tienda.descripcion_tienda|truncatechars:100 }}
+                    </p>
+
+                    <!-- ESTADO -->
+                    <p>
+                        Estado:
+                        <span class="
+                            {% if tienda.estado_tienda == 'abierta' %}
+                                text-success
+                            {% elif tienda.estado_tienda == 'pausada' %}
+                                text-warning
+                            {% else %}
+                                text-danger
+                            {% endif %}
+                        ">
+                            {{ tienda.estado_tienda }}
+                        </span>
+                    </p>
+
+                    
+
+                    <!-- BOTÓN -->
+                    <a href="{% url 'ver_tienda' tienda.id_tienda %}" class="btn btn-success btn-sm">
+                        Ver tienda
+                    </a>
+
                 </div>
             </div>
+
         </div>
         {% endfor %}
+
     </div>
 </section>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.getElementById('buscadorTiendas').addEventListener('input', function() {
     const filtro = this.value.toLowerCase();
+
     document.querySelectorAll('.card-tienda-wrapper').forEach(wrapper => {
-        const nombre = wrapper.querySelector('.card-tienda').dataset.nombre;
-        const descripcion = wrapper.querySelector('.card-tienda').dataset.descripcion;
-        wrapper.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? '' : 'none';
+        const card = wrapper.querySelector('.card-tienda');
+
+        const nombre = card.dataset.nombre;
+        const descripcion = card.dataset.descripcion;
+
+        wrapper.style.display =
+            (nombre.includes(filtro) || descripcion.includes(filtro))
+            ? ''
+            : 'none';
     });
 });
 </script>

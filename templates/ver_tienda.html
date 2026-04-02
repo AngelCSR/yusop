@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}{{ tienda.nombre_tienda }} - Yusop{% endblock %}
+
+{% block content %}
+
+<!-- CABECERA TIENDA -->
+<section class="bg-light py-5">
+  <div class="container text-center">
+
+    {% if tienda.avatar_tienda %}  
+      <img src="{{ tienda.avatar_tienda.url }}" 
+           class="mb-3 rounded shadow"
+           style="max-height:200px;object-fit:cover;">
+    {% else %}                  <!-- Si no yiene avatar podriamos poner un avatar por defecto a todas las tiendas -->
+      <img src="/media/tienda.png" 
+           class="mb-3 rounded shadow"
+           style="max-height:200px;">
+    {% endif %}
+
+    <h1 class="text-success">{{ tienda.nombre_tienda }}</h1>
+
+    <p class="text-muted w-50 mx-auto">
+      {{ tienda.descripcion_tienda }}
+    </p>
+
+    <p>
+      Estado:
+      <span class="
+        {% if tienda.estado_tienda == 'abierta' %}
+          text-success
+        {% elif tienda.estado_tienda == 'pausada' %}
+          text-warning
+        {% else %}
+          text-danger
+        {% endif %}
+      ">
+        {{ tienda.estado_tienda }}
+      </span>
+    </p>
+
+    {% if tienda.id_usuario %}
+      <p class="small text-muted">
+        Propietario: {{ tienda.id_usuario.username }}
+      </p>
+    {% endif %}
+
+    {% if tienda.direccionestienda_set.all %}
+      <p class="small text-muted">
+        {{ tienda.direccionestienda_set.first.direccion_tienda }}
+      </p>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- PRODUCTOS -->
+<section class="container my-5">
+
+  <h3 class="text-success mb-4 text-center">Productos</h3>
+
+  <div class="row g-4">
+
+    {% for producto in productos %}
+    <div class="col-md-4">
+
+      <div class="card h-100 shadow">
+
+        {% if producto.imagen %}
+          <img src="{{ producto.imagen.url }}" class="card-img-top" style="height:200px;object-fit:cover;">
+        {% else %}
+          <img src="/media/default.png" class="card-img-top" style="height:200px;">
+        {% endif %}
+
+        <div class="card-body text-center">
+
+          <h5>{{ producto.nombre_producto }}</h5>
+
+          <p class="fw-bold text-success">
+            €{{ producto.precio_producto|floatformat:2 }}
+          </p>
+
+          <p class="
+            {% if producto.estado_producto == 'disponible' %}
+              text-success
+            {% elif producto.estado_producto == 'pausado' %}
+              text-warning
+            {% else %}
+              text-danger
+            {% endif %}
+          ">
+            {{ producto.estado_producto }}
+          </p>
+
+          <p class="text-muted small">
+            Stock: {{ producto.stock_producto }}
+          </p>
+
+          <a href="{% url 'detalle_producto' producto.id_producto %}" 
+             class="btn btn-success btn-sm">
+            Ver producto
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+    {% empty %}
+      <p class="text-center text-muted">Esta tienda aún no tiene productos.</p>
+    {% endfor %}
+
+  </div>
+
+</section>
+
+{% endblock %}

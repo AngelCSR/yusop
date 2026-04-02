@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Editar Producto - Yusop{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mt-5 p-4 shadow">
+        <h3 class="text-center text-success mb-4">Editar Producto</h3>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" name="nombre_producto" class="form-control" value="{{ producto.nombre_producto }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea name="descripcion_producto" class="form-control" rows="3">{{ producto.descripcion_producto }}</textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Precio (€)</label>
+            <input type="number" name="precio_producto" step="0.01" class="form-control" value="{{ producto.precio_producto }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Stock</label>
+            <input type="number" name="stock_producto" class="form-control" value="{{ producto.stock_producto }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select name="estado_producto" class="form-select" required>
+              <option value="disponible" {% if producto.estado_producto = "disponible" %}selected{% endif %}>Disponible</option>
+              <option value="pausado" {% if producto.estado_producto = "pausado" %}selected{% endif %}>Pausado</option>
+              <option value="retirado" {% if producto.estado_producto = "retirado" %}selected{% endif %}>Retirado</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Imagen</label>
+            {% if producto.imagen %}
+              <div class="mb-2">
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre_producto }}" style="height:100px;object-fit:cover;">
+              </div>
+            {% endif %}
+            <input type="file" name="imagen" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-success w-100">Guardar Cambios</button>
+          <a href="{% url 'productos' %}" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
