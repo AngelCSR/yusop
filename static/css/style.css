@@ -43,3 +43,46 @@ footer {
 .table-hover tbody tr:hover {
     background-color: #f1f8f5;
 }
+
+/* =========================================================
+   === ESTILO POR DEFECTO: Pantallas Grandes y Móviles ===
+   ========================================================= */
+.hero-background-market {
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+        url('../img/header4.png');
+    
+    /* 1. CAMBIO A COVER: Al no tener flechas, cover es nuestro mejor amigo.
+          Rellenará todo el alto del header siempre, cortando solo un poco de los 
+          lados en pantallas pequeñas, pero manteniendo el diseño intacto. */
+    background-size: cover; 
+    background-position: center top; /* Centrado y pegado arriba */
+    background-repeat: no-repeat;
+    
+    /* TRUCO PARA ANCHO COMPLETO */
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-top: -1.5rem; 
+
+    /* Flexbox para centrar el título y el buscador siempre en el medio */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* Proporción panorámica para pantallas grandes */
+    aspect-ratio: 4 / 1; 
+    
+    /* 2. ¡LA CLAVE SALVAVIDAS! 
+          El header encogerá con el aspect-ratio, pero en el momento en que 
+          llegue a 350px de alto, se "congelará" y dejará de encoger. 
+          Así tu contenido siempre tendrá espacio para respirar. */
+    min-height: 350px; 
+    
+    /* Un poco de margen interior para que nada pegue en los bordes */
+    padding: 0 1rem; 
+}
