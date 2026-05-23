@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&family=Playpen+Sans:wght@100..800&family=Poetsen+One&display=swap');
+
+  #logo{
+      font-family: "Playpen Sans";
+      font-weight: 700;
+      font-style: normal;
+  }
+
+  h1{
+      font-family: "Poetsen One", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+  }
+
+  *{
+      font-family: "National Park", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+  }
+
+  :root {
+      --primary-color: #5b95c8;
+      --secondary-color: #3aa091;
+  }
+
+  .navbar {
+      background-color: var(--primary-color);
+  }
+
+  .navbar-brand, .nav-link {
+      color: white !important;
+  }
+
+  #vaciar{
+      background-color: #D67EC9;
+      color: white;
+      border: none;
+  }
+</style>
+
+<div class="container my-5">
+
+<h2 class="mb-4">Carrito</h2>
+
+{% if items %}
+
+<table class="table table-striped align-middle">
+
+<tr>
+<th>Producto</th>
+<th>Cantidad</th>
+<th>Precio</th>
+<th>Subtotal</th>
+<th></th>
+</tr>
+
+{% for i in items %}
+<tr>
+
+<td>{{ i.id_producto.nombre_producto }}</td>
+<td>{{ i.cantidad_producto }}</td>
+<td>{{ i.id_producto.precio_producto }} €</td>
+
+<td>
+{{ i.id_producto.precio_producto|floatformat:2 }}
+</td>
+
+<td>
+<a href="{% url 'eliminar_carrito' i.id_producto.id_producto %}"
+class="btn btn-danger btn-sm">X</a>
+</td>
+
+</tr>
+{% endfor %}
+
+</table>
+
+<h4 class="mt-3">Total: €{{ total }}</h4>
+
+<form method="post" action="{% url 'comprar' %}">
+{% csrf_token %}
+<button class="btn btn-success w-100 mt-3">Comprar</button>
+</form>
+
+{% else %}
+<p class="text-muted">Carrito vacío</p>
+{% endif %}
+
+</div>
+
+{% endblock %}

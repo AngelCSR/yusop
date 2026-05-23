@@ -5,11 +5,11 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-7">
+        <div class="col-md-8">
 
             <!-- PERFIL -->
             <div class="card mt-5 p-4 shadow">
-                <h3 class="text-center text-success mb-4">👤 Perfil de usuario</h3>
+                <h3 class="text-center text-success mb-4">Perfil de usuario</h3>
 
                 <form method="post">
                     {% csrf_token %}
@@ -29,32 +29,206 @@
             <div class="card mt-4 p-4 shadow">
 
                 {% if tienda %}
-                    <!-- SI EXISTE TIENDA -->
-                    <h4 class="text-center text-success mb-3"> Mi tienda</h4>
+
+                    <h4 class="text-center text-success mb-3">
+                        Mi tienda
+                    </h4>
 
                     <div class="card p-3">
-                        <img src="{{ tienda.avatar_tienda.url|default:'/media/tienda.png' }}"
-                             class="img-fluid mb-2"
-                             style="max-height:200px;object-fit:cover;">
+
+                        {% if tienda.avatar_tienda %}
+                            <img src="{{ tienda.avatar_tienda.url }}"
+                                 class="img-fluid mb-3 rounded"
+                                 style="max-height:200px;object-fit:cover;">
+                        {% else %}
+                            <img src="/media/tienda.png"
+                                 class="img-fluid mb-3 rounded"
+                                 style="max-height:200px;object-fit:cover;">
+                        {% endif %}
 
                         <h5>{{ tienda.nombre_tienda }}</h5>
-                        <p>{{ tienda.descripcion_tienda }}</p>
 
-                        <p><strong>Estado:</strong> {{ tienda.estado_tienda }}</p>
+                        <p>
+                            {{ tienda.descripcion_tienda }}
+                        </p>
+
+                        <p>
+                            <strong>Estado:</strong>
+                            {{ tienda.estado_tienda }}
+                        </p>
+
+                        <a href="{% url 'ver_tienda' tienda.id_tienda %}"
+                           class="btn btn-success">
+                            Ver tienda
+                        </a>
+
                     </div>
 
                 {% else %}
-                    <!-- SI NO EXISTE -->
-                    <h4 class="text-center text-success mb-3">Crear tienda</h4>
 
-                    <form method="post">
+                    <h4 class="text-center text-success mb-3">
+                        Crear tienda
+                    </h4>
+
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ tienda_form.as_p }}
 
-                        <button type="submit" name="crear_tienda" class="btn btn-success w-100">
+                        <button type="submit"
+                                name="crear_tienda"
+                                class="btn btn-success w-100">
+
                             Crear tienda
+
                         </button>
                     </form>
+
+                {% endif %}
+
+            </div>
+
+            <!-- PEDIDOS -->
+            <div class="card mt-4 p-4 shadow">
+
+                <h4 class="text-center text-success mb-4">
+                    Pedidos recibidos
+                </h4>
+
+                {% if pedidos_recibidos %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-striped align-middle">
+
+                        <thead class="table-success">
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Producto</th>
+                                <th>Comprador</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for detalle in pedidos_recibidos %}
+                            <tr>
+
+                                <!-- IMAGEN -->
+                                <td>
+
+                                    {% if detalle.id_producto.imagen %}
+                                        <img src="{{ detalle.id_producto.imagen.url }}"
+                                             style="height:60px;object-fit:cover;">
+                                    {% else %}
+                                        <img src="/media/default.png"
+                                             style="height:60px;">
+                                    {% endif %}
+
+                                </td>
+
+                                <!-- PRODUCTO -->
+                                <td>
+                                    {{ detalle.id_producto.nombre_producto }}
+                                </td>
+
+                                <!-- COMPRADOR -->
+                                <td>
+                                    {{ detalle.id_pedido.id_usuario.username }}
+                                </td>
+
+                                <!-- CANTIDAD -->
+                                <td>
+                                    {{ detalle.cantidad_producto }}
+                                </td>
+
+                                <!-- SUBTOTAL -->
+                                <td>
+                                    €{{ detalle.subtotal_producto }}
+                                </td>
+
+                                <!-- ESTADO -->
+                                <td>
+
+                                    {% if detalle.id_pedido.estado_pedido == 'pendiente' %}
+                                        <span class="badge bg-warning text-dark">
+                                            Pendiente
+                                        </span>
+
+                                    {% elif detalle.id_pedido.estado_pedido == 'enviado' %}
+                                        <span class="badge bg-primary">
+                                            Enviado
+                                        </span>
+
+                                    {% elif detalle.id_pedido.estado_pedido == 'completado' %}
+                                        <span class="badge bg-success">
+                                            Completado
+                                        </span>
+                                    {% endif %}
+
+                                </td>
+
+                                <!-- FECHA -->
+                                <td>
+                                    {{ detalle.id_pedido.fecha_pedido }}
+                                </td>
+
+                                <!-- ACCIONES -->
+                                <td>
+
+                                    <!-- CAMBIAR ESTADO -->
+                                    <div class="d-flex flex-column gap-1">
+
+                                        <a href="{% url 'cambiar_estado_pedido' detalle.id_pedido.id_pedido 'pendiente' %}"
+                                           class="btn btn-sm btn-warning">
+
+                                            Pendiente
+
+                                        </a>
+
+                                        <a href="{% url 'cambiar_estado_pedido' detalle.id_pedido.id_pedido 'enviado' %}"
+                                           class="btn btn-sm btn-primary">
+
+                                            Enviado
+
+                                        </a>
+
+                                        <a href="{% url 'cambiar_estado_pedido' detalle.id_pedido.id_pedido 'completado' %}"
+                                           class="btn btn-sm btn-success">
+
+                                            Completado
+
+                                        </a>
+
+                                        <a href="{% url 'borrar_detalle_pedido' detalle.id_producto.id_producto detalle.id_pedido.id_pedido %}"
+                                           class="btn btn-sm btn-danger">
+
+                                            Borrar
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% else %}
+
+                    <p class="text-muted text-center">
+                        No tienes pedidos recibidos.
+                    </p>
 
                 {% endif %}
 
@@ -65,3 +239,4 @@
 </div>
 
 {% endblock %}
+
