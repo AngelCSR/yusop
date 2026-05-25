@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ tienda.nombre_tienda }} - Yusop{% endblock %}
+
+{% block content %}
+<div class="position-relative" style="margin-top: -1.5rem;">
+    <img src="{{ tienda.banner_url }}" alt="Banner de {{ tienda.nombre_tienda }}" style="width: 100vw; height: 300px; object-fit: cover; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+</div>
+
+<div class="position-relative mb-5" style="margin-top: -75px; z-index: 2;">
+    <div class="row align-items-end"> 
+        
+        <div class="col-md-auto text-center mb-3 mb-md-0">
+            <img src="{{ tienda.avatar_url }}" class="rounded-circle shadow bg-white p-1" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid white;">
+        </div>
+        
+        <div class="col-md">
+            <div class="bg-white p-4 rounded shadow-sm">
+                <h1 class="fw-bold text-success mb-2">{{ tienda.nombre_tienda }}</h1>
+                <p class="lead text-muted mb-3">{{ tienda.descripcion_tienda|default:"Bienvenidos a nuestra tienda oficial en Yusop." }}</p>
+                
+                {% if tienda.estado_tienda == 'pausada' %}
+                    <div class="alert alert-warning d-inline-block py-1 px-3 small mb-0">
+                        Esta tienda está pausada temporalmente. No se pueden realizar pedidos ahora.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="container mb-5">
+    <h3 class="fw-bold mb-4">Nuestro Catálogo</h3>
+    
+    <div class="row g-4">
+        {% for producto in productos %}
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0 card-producto">
+                <a href="{% url 'detalle_producto' producto.id %}">
+                    {% if producto.imagenes.exists %}
+                        <img src="{{ producto.imagenes.first.imagen_producto.url }}" class="card-img-top w-100 h-100" style="object-fit: cover;" alt="{{ producto.nombre_producto }}">
+                    {% else %}
+                        <img src="{% static 'img/item.png' %}" class="card-img-top w-100 h-100" style="object-fit: contain; padding: 20px; background-color: #f8f9fa;" alt="Sin imagen">
+                    {% endif %}
+                </a>
+
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title fw-bold mb-1">
+                        <a href="{% url 'detalle_producto' producto.id %}" class="text-decoration-none text-dark">
+                            {{ producto.nombre_producto }}
+                        </a>
+                    </h6>
+                    <p class="card-text text-muted small flex-grow-1">{{ producto.descripcion_producto|truncatechars:60 }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="h5 fw-bold text-success mb-0">{{ producto.precio_producto|floatformat:2 }}€</span>
+                        
+                        {% if request.user == tienda.usuario %}
+                            {% elif tienda.estado_tienda == 'abierta' %}
+                            <form action="{% url 'agregar_carrito' producto.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-success rounded-circle" title="Añadir al carrito">
+                                    🛒
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted h5">Esta tienda aún no ha subido productos al catálogo.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

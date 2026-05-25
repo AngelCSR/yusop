@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Realizar Compra - Yusop{% endblock %}
+
+{% block content %}
+<header class="hero-background-market text-center mb-0 pb-4">
+  <h1 class="display-5 fw-bold text-success mt-3">Finalizar Compra</h1>
+  <p class="lead text-dark fw-bold">Estás a un paso de completar tu pedido.</p>
+</header>
+
+<div class="container overlap-section mb-5">
+    <form method="POST" action="{% url 'checkout' %}">
+        {% csrf_token %}
+        <div class="row g-4">
+            
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                        <h4 class="fw-bold mb-0">1. Datos de contacto y envío</h4>
+                        {% if not request.user.is_authenticated %}
+                            <p class="text-muted small mt-2">¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a> para rellenar esto más rápido.</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">Nombre completo</label>
+                                {{ form.nombre_completo }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">Email</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold small text-muted">Teléfono</label>
+                                {{ form.telefono }}
+                            </div>
+                            
+                            <hr class="my-4 text-muted">
+                            
+                            <div class="col-12">
+                                <label class="form-label fw-bold small text-muted">Dirección completa</label>
+                                {{ form.direccion }}
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold small text-muted">Localidad</label>
+                                {{ form.localidad }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">Provincia</label>
+                                {{ form.provincia }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold small text-muted">Cód. Postal</label>
+                                {{ form.codigo_postal }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-3">2. Método de pago</h4>
+                        
+                        {{ form.metodo_pago }}
+                        
+                        <div id="datos-tarjeta" class="mt-4 pago-opcion" style="display: none;">
+                            <h6 class="fw-bold">Datos de la Tarjeta</h6>
+                            <input type="text" class="form-control mb-2" placeholder="Número de la tarjeta (Ej: 4500 1234 ...)">
+                            <div class="row g-2">
+                                <div class="col-6"><input type="text" class="form-control" placeholder="Caducidad (MM/AA)"></div>
+                                <div class="col-6"><input type="password" class="form-control" placeholder="CVV"></div>
+                            </div>
+                        </div>
+
+                        <div id="datos-bizum" class="mt-4 pago-opcion" style="display: none;">
+                            <h6 class="fw-bold text-success">Pago con Bizum</h6>
+                            <p class="small text-muted mb-2">Introduce tu número asociado a Bizum para recibir la notificación de cobro.</p>
+                            <input type="text" class="form-control" placeholder="Número de teléfono móvil">
+                        </div>
+
+                        <div id="datos-paypal" class="mt-4 pago-opcion" style="display: none;">
+                            <div class="alert alert-info small mb-0">
+                                Serás redirigido a la pasarela segura de PayPal al confirmar el pedido.
+                            </div>
+                        </div>
+
+                        <div id="datos-transferencia" class="mt-4 pago-opcion" style="display: none;">
+                            <div class="alert alert-secondary small mb-0">
+                                <strong>IBAN de Yusop:</strong> ES91 1234 5678 9012 3456<br>
+                                Indica tu número de pedido en el concepto. El pedido se enviará al recibir el importe.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div> <div class="col-lg-4">
+                <div class="card border-0 shadow-sm" style="border-radius: 15px; position: sticky; top: 20px;">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-4">Resumen</h4>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal</span>
+                            <span class="fw-bold">{{ total|floatformat:2 }}€</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
+                            <span class="text-muted">Envío</span>
+                            <span class="text-success fw-bold">Gratis</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5 class="fw-bold mb-0">Total</h5>
+                            <h5 class="fw-bold text-success mb-0">{{ total|floatformat:2 }}€</h5>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-custom-success w-100 py-3 fw-bold fs-5 shadow-sm" style="border-radius: 10px;">
+                            Pagar y Confirmar
+                        </button>
+                        
+                        <div class="text-center mt-3">
+                            <small class="text-muted">Pago 100% seguro y encriptado.</small>
+                        </div>
+                    </div>
+                </div>
+            </div> </div> </form>
+</div>
+
+{% block scripts %}
+    <script src="{% static 'js/metodos_pagos.js' %}"></script>
+{% endblock %}
+{% endblock %}

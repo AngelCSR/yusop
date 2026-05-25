@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel Admin - Mis Tiendas - Yusop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">🏪 Gestión de Mis Tiendas</h2>
+        
+        <a href="{% url 'crear_tienda' %}" class="btn btn-primary px-4 fw-bold shadow-sm">
+            ➕ Crear nueva tienda
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Logo</th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tienda in tiendas %}
+                    <tr>
+                        <td>
+                            {% if tienda.avatar_tienda %}
+                                <img src="{{ tienda.avatar_tienda.url }}" alt="Logo" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'img/tienda.png' %}" alt="Sin logo" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                            {% endif %}
+                        </td>
+                        <td class="fw-bold">{{ tienda.nombre_tienda }}</td>
+                        <td>
+                            {% if tienda.estado_tienda == 'abierta' %}
+                                <span class="badge bg-success">Abierta</span>
+                            {% elif tienda.estado_tienda == 'pausada' %}
+                                <span class="badge bg-warning text-dark">Pausada</span>
+                            {% else %}
+                                <span class="badge bg-danger">Cerrada</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'productos_tienda' tienda.id %}" class="btn btn-sm btn-outline-info" title="Gestionar Productos">
+                                    📦 Productos
+                                </a>
+                                <a href="{% url 'editar_tienda' tienda.id %}" class="btn btn-sm btn-outline-warning" title="Editar">
+                                    ✏️
+                                </a>
+                                <button type="button" 
+                                    class="btn btn-sm btn-outline-danger" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#modalEliminar{{ tienda.id }}" 
+                                    title="Desactivar Tienda">
+                                    🗑️
+                                </button>
+                            </div>
+                                {% include "admin/modal_desactivar_tienda.html" %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <p class="mb-2">Aún no has registrado ninguna tienda.</p>
+                            <a href="{% url 'crear_tienda' %}" class="btn btn-sm btn-primary">¡Crea tu primera tienda ahora!</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

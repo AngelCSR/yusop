@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %} {% block title %}Mis Pedidos - Yusop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="fw-bold text-success mb-4">Gestión de Pedidos</h2>
+
+    {% if tienda %}
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-header bg-success text-white py-3">
+            <h5 class="mb-0 fw-bold">Pedidos recibidos en: {{ tienda.nombre_tienda }}</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if pedidos_recibidos %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Producto</th>
+                            <th>Comprador</th>
+                            <th>Cant.</th>
+                            <th>Subtotal</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in pedidos_recibidos %}
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    {% if detalle.id_producto.imagenes.exists %}
+                                        <img src="{{ detalle.id_producto.imagenes.first.imagen_producto.url }}" class="rounded me-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{% static 'img/no-image.png' %}" class="rounded me-3 shadow-sm" style="width: 50px; height: 50px; object-fit: contain; background: #f8f9fa; padding: 5px;">
+                                    {% endif %}
+                                    <span class="fw-bold text-dark">{{ detalle.id_producto.nombre_producto }}</span>
+                                </div>
+                            </td>
+                            <td>{{ detalle.id_pedido.id_usuario.username }}</td>
+                            <td><span class="badge bg-light text-dark border">{{ detalle.cantidad_producto }}</span></td>
+                            <td class="fw-bold text-success">{{ detalle.subtotal_producto }}€</td>
+                            <td>
+                                {% if detalle.id_pedido.estado_pedido == 'pendiente' %}
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                {% elif detalle.id_pedido.estado_pedido == 'enviado' %}
+                                    <span class="badge bg-primary">Enviado</span>
+                                {% elif detalle.id_pedido.estado_pedido == 'completado' %}
+                                    <span class="badge bg-success">Completado</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted"><small>{{ detalle.id_pedido.fecha_pedido|date:"d/m/Y" }}</small></td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'cambiar_estado_pedido' detalle.id_pedido.id 'pendiente' %}" class="btn btn-sm btn-outline-warning">Pend.</a>
+                                    <a href="{% url 'cambiar_estado_pedido' detalle.id_pedido.id 'enviado' %}" class="btn btn-sm btn-outline-primary">Env.</a>
+                                    <a href="{% url 'cambiar_estado_pedido' detalle.id_pedido.id 'completado' %}" class="btn btn-sm btn-outline-success">Comp.</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <div class="p-5 text-center">
+                    <h5 class="text-muted">Aún no tienes pedidos recibidos en tu tienda.</h5>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm border-0 bg-light mt-4">
+        <div class="card-body p-4">
+            <h4 class="fw-bold mb-3">Mis compras</h4>
+            {% if mis_compras %}
+                <ul class="list-group list-group-flush">
+                    {% for compra in mis_compras %}
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold">Pedido #{{ compra.id }}</span> - {{ compra.fecha_pedido|date:"d/m/Y" }}
+                            </div>
+                            <div>
+                                <span class="badge {% if compra.estado_pedido == 'completado' %}bg-success{% elif compra.estado_pedido == 'enviado' %}bg-primary{% else %}bg-warning text-dark{% endif %} me-3">
+                                    {{ compra.estado_pedido|title }}
+                                </span>
+                                <span class="fw-bold text-success">{{ compra.importe_pedido }}€</span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted mb-0">No has realizado ninguna compra todavía.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

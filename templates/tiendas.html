@@ -1,36 +1,58 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block title %}Tiendas - Yusop{% endblock %}
 
 {% block content %}
 <header class="hero-background-market text-center">
-    <h1 class="display-5 fw-bold text-success">🏪 Tiendas locales</h1>
+    <h1 class="display-5 fw-bold text-success">Tiendas locales</h1>
     <p class="lead text-dark fw-bold">Explora las tiendas de tu zona y apoya al comercio local.</p>
-    <div class="input-group w-50 mx-auto mt-3">
-        <input type="text" class="form-control" id="buscadorTiendas" placeholder="Buscar tiendas...">
-        <button class="btn btn-success">Buscar</button>
+    
+    <div class="search-wrapper px-3 mt-4">
+        <form action="{% url 'tiendas' %}" method="GET" class="input-group input-group-lg shadow-sm">
+            <input type="text" name="q" id="buscadorTiendas" value="{{ query }}" class="form-control border-0" placeholder="Buscar tiendas por nombre o descripción...">
+            <button type="submit" class="btn btn-custom-success fw-bold">Buscar</button>
+        </form>
     </div>
 </header>
 
-<section class="container my-5">
+<section class="container overlap-section mb-5">
     <div class="row g-4" id="listaTiendas">
         {% for tienda in tiendas %}
         <div class="col-md-4 card-tienda-wrapper">
-            <div class="card card-tienda h-100 shadow-sm" 
+            <div class="card card-tienda h-100 shadow-sm border-0" 
                  data-nombre="{{ tienda.nombre_tienda|lower }}" 
-                 data-descripcion="{{ tienda.descripcion_tienda|lower }}">
+                 data-descripcion="{{ tienda.descripcion_tienda|default:''|lower }}">
+                
+                <div class="text-center p-4 bg-light">
+                    {% if tienda.avatar_tienda %}
+                        <img src="{{ tienda.avatar_tienda.url }}" class="rounded-circle img-thumbnail shadow-sm" style="width: 120px; height: 120px; object-fit: cover;" alt="{{ tienda.nombre_tienda }}">
+                    {% else %}
+                        <img src="{% static 'img/tienda.png' %}" class="rounded-circle img-thumbnail shadow-sm" style="width: 120px; height: 120px; object-fit: cover;" alt="Sin logo">
+                    {% endif %}
+                </div>
+
                 <div class="card-body text-center d-flex flex-column">
                     <h5 class="card-title fw-bold text-success">{{ tienda.nombre_tienda }}</h5>
-                    <p class="card-text text-muted">{{ tienda.descripcion_tienda|truncatechars:100 }}</p>
+                    <p class="card-text text-muted small">{{ tienda.descripcion_tienda|default:"Sin descripción"|truncatechars:100 }}</p>
+                    
+                    <div class="mb-3">
+                        {% if tienda.estado_tienda == 'abierta' %}
+                            <span class="badge bg-success">Abierta</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pausada temporalmente</span>
+                        {% endif %}
+                    </div>
                     
                     <div class="mt-auto">
-                        <a href="#" class="btn btn-success btn-sm w-100">Ver tienda</a>
+                        <a href="{% url 'detalle_tienda' tienda.id %}" class="btn btn-custom-success w-100 stretched-link">Ver tienda</a>
                     </div>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <p class="text-muted italic">Todavía no hay tiendas registradas en esta zona. ¡Sé el primero!</p>
+            <p class="text-muted fst-italic">Todavía no hay tiendas registradas en esta zona. ¡Sé el primero!</p>
         </div>
         {% endfor %}
     </div>
@@ -38,16 +60,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    // Tu script de filtrado está perfecto, lo mantenemos igual
-    document.getElementById('buscadorTiendas').addEventListener('input', function() {
-        const filtro = this.value.toLowerCase();
-        document.querySelectorAll('.card-tienda-wrapper').forEach(wrapper => {
-            const card = wrapper.querySelector('.card-tienda');
-            const nombre = card.dataset.nombre;
-            const descripcion = card.dataset.descripcion;
-            wrapper.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? '' : 'none';
-        });
-    });
-</script>
+    <script src="{% static 'js/tiendas.js' %}"></script>
 {% endblock %}

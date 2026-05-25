@@ -1,11 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 class Usuario(AbstractUser):
-    # Campos que no trae Django
-    telefono_usuario = models.IntegerField(null=True, blank=True)
+    telefono_usuario = models.CharField(max_length=20, null=True, blank=True)
     tarjeta_usuario = models.BigIntegerField(null=True, blank=True)
-    avatar_usuario = models.ImageField(default='usuario.png', upload_to='avatars/')
+    avatar_usuario = models.ImageField(upload_to='usuarios/avatars/', null=True, blank=True)
+
+    @property
+    def avatar_url(self):
+        if self.avatar_usuario and self.avatar_usuario.url:
+            return self.avatar_usuario.url
+        return settings.STATIC_URL + 'img/avatar.png'
     
     ESTADO_CHOICES = [
         ('activo', 'Activo'),
@@ -19,75 +25,148 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.username
-    
+
+
 class Tienda(models.Model):
-    nombre_tienda = models.CharField(max_length=30)
-    descripcion_tienda = models.TextField(max_length=1000, null=True, blank=True)
-    avatar_tienda = models.ImageField(default='tienda.png', upload_to='tiendas/')
+    nombre_tienda = models.CharField(max_length=100, unique=True)
+    descripcion_tienda = models.TextField(null=True, blank=True)
+    avatar_tienda = models.ImageField(upload_to='tiendas/avatars/', null=True, blank=True)
+    banner_tienda = models.ImageField(upload_to='tiendas/banners/', null=True, blank=True)
+
+    @property
+    def avatar_url(self):
+        if self.avatar_tienda and self.avatar_tienda.url:
+            return self.avatar_tienda.url
+        return settings.STATIC_URL + 'img/tienda.png'
+
+    @property
+    def banner_url(self):
+        if self.banner_tienda and self.banner_tienda.url:
+            return self.banner_tienda.url
+        return settings.STATIC_URL + 'img/banner.png'
     
     ESTADO_TIENDA = [
         ('abierta', 'Abierta'),
         ('pausada', 'Pausada'),
         ('cerrada', 'Cerrada'),
     ]
-    estado_tienda = models.CharField(max_length=7, choices=ESTADO_TIENDA, default='abierta')
+    estado_tienda = models.CharField(max_length=15, choices=ESTADO_TIENDA, default='abierta')
     
-    # Relación con Usuario (id_usuario INT)
-    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, related_name='mis_tiendas')
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True, related_name='mis_tiendas')
 
     def __str__(self):
         return self.nombre_tienda
 
+
 class Producto(models.Model):
-    nombre_producto = models.CharField(max_length=30)
-    descripcion_producto = models.TextField(max_length=1000, null=True, blank=True)
-    precio_producto = models.DecimalField(max_digits=7, decimal_places=2)
-    stock_producto = models.IntegerField()
+    nombre_producto = models.CharField(max_length=100)
+    descripcion_producto = models.TextField(null=True, blank=True)
+    precio_producto = models.DecimalField(max_digits=10, decimal_places=2)
+    stock_producto = models.IntegerField(default=0)
+    imagen_principal = models.ImageField(upload_to='productos/', null=True, blank=True)
+
+    @property
+    def image_url(self):
+        if self.imagen_principal and self.imagen_principal.url:
+            return self.imagen_principal.url
+        return settings.STATIC_URL + 'img/item.png'
     
     ESTADO_PRODUCTO = [
         ('disponible', 'Disponible'),
         ('pausado', 'Pausado'),
         ('retirado', 'Retirado'),
     ]
-    estado_producto = models.CharField(max_length=10, choices=ESTADO_PRODUCTO, default='disponible')
+    estado_producto = models.CharField(max_length=15, choices=ESTADO_PRODUCTO, default='disponible')
     
-    # Relación con Tienda (id_tienda INT)
     tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE, related_name='productos')
 
     def __str__(self):
         return self.nombre_producto
+
+
+class ImagenProducto(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='imagenes')
+    imagen_producto = models.ImageField(upload_to='productos/')
+
+    def __str__(self):
+        return f"Imagen de {self.producto.nombre_producto}"
     
+
 class DireccionUsuario(models.Model):
-    direccion = models.CharField(max_length=100)
+    direccion_usuario = models.CharField(max_length=255)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='direcciones')
 
     class Meta:
-        unique_together = ('direccion', 'usuario') # Equivale a tu CONSTRAINT UNIQUE
+        unique_together = ('direccion_usuario', 'usuario')
+
 
 class DireccionTienda(models.Model):
-    direccion = models.CharField(max_length=100)
+    direccion_tienda = models.CharField(max_length=255) # Renombrado
     tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE, related_name='direcciones')
 
     class Meta:
-        unique_together = ('direccion', 'tienda')
+        unique_together = ('direccion_tienda', 'tienda')
+
+
+class Valoracion(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='valoraciones')
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='valoraciones')
+    
+    puntuacion = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    comentario = models.TextField(blank=True, null=True)
+    fecha_valoracion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['producto', 'usuario'], name='unique_valoracion_usuario')
+        ]
+
+    def __str__(self):
+        return f"{self.puntuacion}★ por {self.usuario.username} para {self.producto.nombre_producto}"
+
+class Carrito(models.Model):
+    id_carrito = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey('core.Usuario', on_delete=models.CASCADE)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'carrito'
+
+
+class CarritoProducto(models.Model):
+    id_carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='items')
+    id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad_producto = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = 'carrito_productos'
+        unique_together = ('id_carrito', 'id_producto')
 
 class Pedido(models.Model):
     fecha_pedido = models.DateTimeField(auto_now_add=True)
     importe_pedido = models.DecimalField(max_digits=12, decimal_places=2)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pedidos')
-
-class DetallePedido(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
-    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
-    cantidad = models.IntegerField()
-    precio_unitario = models.DecimalField(max_digits=7, decimal_places=2)
-    subtotal = models.DecimalField(max_digits=12, decimal_places=2)
+    id_usuario = models.ForeignKey('core.Usuario', on_delete=models.CASCADE)
+    estado_pedido = models.CharField(
+        max_length=20,
+        choices=[
+            ('pendiente', 'Pendiente'),
+            ('enviado', 'Enviado'),
+            ('completado', 'Completado')
+        ],
+        default='pendiente'
+    )
 
     class Meta:
-        # Quitamos primary_key = False y dejamos solo la restricción de unicidad
-        constraints = [
-            models.UniqueConstraint(fields=['pedido', 'producto'], name='unique_pedido_producto')
-        ]
+        db_table = 'core_pedido' 
 
-    def __str__(self):
-        return f"Detalle de {self.pedido.id} - {self.producto.nombre_producto}"
+
+class DetallePedido(models.Model):
+    cantidad_producto = models.IntegerField()
+    precio_unitario_producto = models.DecimalField(max_digits=7, decimal_places=2)
+    subtotal_producto = models.DecimalField(max_digits=12, decimal_places=2)
+    
+    id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='detalles')
+    id_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
+
+    class Meta:
+        db_table = 'core_detallepedido'

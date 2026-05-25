@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mi Carrito - Yusop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-success mb-0">Mi Carrito</h2>
+        {% if items %}
+            <a href="{% url 'limpiar_carrito' %}" id="vaciar" class="btn btn-sm px-3 py-2 rounded">Vaciar carrito</a>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            {% if items %}
+                <div class="card shadow-sm border-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-4">Producto</th>
+                                    <th scope="col" class="text-center">Precio</th>
+                                    <th scope="col" class="text-center">Cantidad</th>
+                                    <th scope="col" class="text-end pe-4">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <td class="ps-4">
+                                        <h6 class="mb-0 fw-bold text-dark">{{ item.nombre }}</h6>
+                                        <small class="text-muted">Vendido por: {{ item.tienda }}</small>
+                                    </td>
+                                    <td class="text-center text-secondary">{{ item.precio|floatformat:2 }}€</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border px-3 py-2">{{ item.cantidad }}</span>
+                                    </td>
+                                    <td class="text-end pe-4 fw-bold text-success">
+                                        {{ item.acumulado|floatformat:2 }}€
+                                        <a href="{% url 'eliminar_carrito' item.producto_id %}" class="text-danger ms-2 text-decoration-none">❌</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card shadow-sm border-0 py-5 text-center bg-light">
+                    <h4 class="text-muted mb-3">Tu carrito está vacío 🕸️</h4>
+                    <p class="text-secondary mb-4">¡Parece que aún no has encontrado lo que buscas!</p>
+                    <div>
+                        <a href="{% url 'productos' %}" class="btn btn-custom-success px-4 py-2 fw-bold rounded">Ir a la tienda</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Resumen del pedido</h5>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="fw-bold">{{ total_carrito|floatformat:2 }}€</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                        <span class="text-muted">Gastos de envío:</span>
+                        <span class="text-success fw-bold">Gratis</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-4 align-items-center">
+                        <span class="h5 fw-bold mb-0">Total:</span>
+                        <span class="h3 fw-bold text-success mb-0">{{ total_carrito|floatformat:2 }}€</span>
+                    </div>
+
+                    {% if items %}
+                        <a href="{% url 'checkout' %}" class="btn btn-custom-success w-100 fw-bold">
+                            Proceder al Pago
+                        </a>
+                    {% else %}
+                        <button class="btn btn-secondary w-100 fw-bold py-3 rounded" disabled>
+                            Proceder al Pago
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Crear Producto - Yusop{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mt-5 p-4 shadow">
+        <h3 class="text-center text-success mb-4">Crear Producto</h3>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" name="nombre_producto" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea name="descripcion_producto" class="form-control" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Precio (€)</label>
+            <input type="number" name="precio_producto" step="0.01" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Stock</label>
+            <input type="number" name="stock_producto" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select name="estado_producto" class="form-select" required>
+              <option value="disponible">Disponible</option>
+              <option value="pausado">Pausado</option>
+              <option value="retirado">Retirado</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Imagen</label>
+            <input type="file" name="imagen" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-success w-100">Crear Producto</button>
+          <a href="{% url 'productos' %}" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

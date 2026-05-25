@@ -1,0 +1,20 @@
+<div class="modal fade" id="modalEliminarProd{{ producto.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold">¿Retirar producto del catálogo?</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-start p-4">
+                <p class="mb-1 text-dark fw-bold h6">Vas a retirar: <span class="text-danger">"{{ producto.nombre_producto }}"</span></p>
+                <p class="text-muted small mb-0">El artículo dejará de ser visible para los compradores, pero se mantendrá en el sistema para no alterar el registro de los pedidos históricos.</p>
+            </div>
+            <div class="modal-footer bg-light border-top-0">
+                <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Cancelar</button>
+                <a href="{% url 'desactivar_producto' producto.id %}" class="btn btn-sm btn-danger px-4 fw-bold">
+                    Sí, retirar producto
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

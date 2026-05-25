@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Registrar Nueva Tienda - Yusop{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 600px;">
+    
+    <a href="{% url 'mis_tiendas' %}" class="btn btn-sm btn-outline-secondary mb-3">
+        ⬅️ Volver al listado
+    </a>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white py-3">
+            <h5 class="mb-0 fw-bold">
+                {% if editando %}
+                    ✏️ Modificar Datos de tu Tienda
+                {% elif editando_producto %}
+                    ✏️ Modificar Datos del Producto
+                {% else %}
+                    Store Manager - Registro
+                {% endif %}
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data" class="row g-3">
+                {% csrf_token %}
+                
+                <div class="col-12">
+                    {{ form.as_p }}
+                </div>
+
+                <div class="col-12 text-end mt-4">
+                    <button type="submit" class="btn btn-success px-5 fw-bold">
+                        {% if editando %}
+                            Guardar Cambios
+                        {% else %}
+                            Guardar y Activar Tienda
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

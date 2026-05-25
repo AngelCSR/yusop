@@ -1,18 +1,32 @@
 {% extends "base.html" %}
-{% block title %}Perfil - Yusop{% endblock %}
+{% block title %}Configuración de Perfil - Yusop{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card mt-5 p-4">
-                <h3 class="text-center text-success mb-4">Perfil de usuario</h3>
-                <form method="post">
+            <div class="card shadow-sm p-4 border-0 bg-light">
+                <h3 class="text-center text-success mb-4">⚙️ Configuración de Perfil</h3>
+                
+                <div class="text-center mb-4">
+                    {% if user.avatar_usuario %}
+                        <img src="{{ user.avatar_usuario.url }}" class="rounded-circle img-thumbnail shadow-sm" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-white rounded-circle d-inline-flex justify-content-center align-items-center shadow-sm" style="width: 150px; height: 150px;">
+                            <span class="display-1">👤</span>
+                        </div>
+                    {% endif %}
+                    <h4 class="mt-3 fw-bold">{{ user.first_name|default:user.username }}</h4>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" class="btn btn-success w-100">Guardar cambios</button>
+                    <button type="submit" class="btn btn-custom-success w-100 py-2 fw-bold mt-2">Guardar cambios</button>
                 </form>
-                <a href="{% url 'logout' %}" class="btn btn-secondary w-100 mt-3">Cerrar sesión</a>
+                
+                <hr class="my-4">
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger w-100 py-2 fw-bold">Cerrar sesión</a>
             </div>
         </div>
     </div>

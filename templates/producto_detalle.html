@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ producto.nombre_producto }} - Yusop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <a href="{% url 'detalle_tienda' producto.tienda.id %}" class="btn btn-sm btn-outline-secondary mb-4">
+        ⬅️ Volver a la tienda {{ producto.tienda.nombre_tienda }}
+    </a>
+
+    <div class="row g-5">
+        <div class="col-md-6">
+            <div class="card border-0 bg-light p-4 text-center rounded-3 shadow-sm">
+                {% if producto.imagenes.exists %}
+                    <img src="{{ producto.imagenes.first.imagen_producto.url }}" class="img-fluid rounded" style="max-height: 400px; object-fit: contain;" alt="{{ producto.nombre_producto }}">
+                {% else %}
+                    <img src="{% static 'img/item.png' %}" class="img-fluid rounded" style="max-height: 400px; object-fit: contain;" alt="Sin foto">
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h1 class="fw-bold text-dark mb-1">{{ producto.nombre_producto }}</h1>
+            <p class="text-muted small">Vendido por: <strong class="text-success">{{ producto.tienda.nombre_tienda }}</strong></p>
+            
+            <div class="mb-3">
+                <span class="text-warning h5">⭐ {{ media_estrellas }}</span>
+                <span class="text-muted small">({{ num_valoraciones }} opiniones)</span>
+            </div>
+
+            <hr class="text-muted">
+
+            <h2 class="text-success fw-bold my-3 display-6">{{ producto.precio_producto|floatformat:2 }}€</h2>
+            
+            <p class="text-secondary mb-4">{{ producto.descripcion_producto|default:"Este producto no cuenta con una descripción detallada todavía." }}</p>
+
+            <p class="small mb-4">
+                {% if producto.stock_producto > 0 %}
+                    <span class="badge bg-success-subtle text-success p-2">Stock disponible: {{ producto.stock_producto }} uds</span>
+                {% else %}
+                    <span class="badge bg-danger-subtle text-danger p-2">Agotado temporalmente</span>
+                {% endif %}
+            </p>
+
+            {% if request.user == producto.tienda.usuario %}
+                <div class="alert alert-warning text-center fw-bold border-0 shadow-sm mt-3" style="background-color: #fff3cd; color: #856404;">
+                    🛍️ Este es tu propio producto, no puedes comprarlo.
+                </div>
+                
+            {% elif producto.tienda.estado_tienda == 'abierta' and producto.stock_producto > 0 %}
+                <form action="{% url 'agregar_carrito' producto.id %}" method="post" class="row g-2 align-items-center mt-3">
+                    {% csrf_token %}
+                    <div class="col-auto">
+                        <input type="number" name="cantidad" value="1" min="1" max="{{ producto.stock_producto }}" class="form-control" style="width: 80px;">
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-custom-success w-100 fw-bold py-2">
+                            🛒 Añadir al carrito
+                        </button>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-5 pt-4 border-top">
+        <div class="col-md-8">
+            <h4 class="fw-bold mb-4">Opiniones de los compradores</h4>
+
+            {% if user.is_authenticated and user != producto.tienda.usuario %}
+                <div class="card p-4 bg-light border-0 mb-4 shadow-sm">
+                    <h6 class="fw-bold mb-3 text-success">Escribir tu valoración</h6>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Puntuación:</label>
+                                {{ form.puntuacion }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.comentario }}
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-sm btn-success px-4 fw-bold">Publicar comentario</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+            {% elif user.is_authenticated and user == producto.tienda.usuario %}
+                <div class="alert alert-warning text-center small mb-4 border-0 shadow-sm" style="background-color: #fff3cd; color: #856404;">
+                    💡 Este producto pertenece a tu tienda. No puedes auto-valorarlo.
+                </div>
+
+            {% else %}
+                <div class="alert alert-secondary small mb-4">
+                     Debes <a href="{% url 'login' %}">iniciar sesión</a> para poder dejar una valoración sobre este producto.
+                </div>
+            {% endif %}
+
+            <div class="space-y-3">
+                {% for val in valoraciones %}
+                    <div class="card p-3 border-0 shadow-sm bg-white mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong class="text-dark">{{ val.usuario.username }}</strong>
+                                <span class="text-warning ms-2">
+                                    {% if val.puntuacion == 1 %}⭐{% elif val.puntuacion == 2 %}⭐⭐{% elif val.puntuacion == 3 %}⭐⭐⭐{% elif val.puntuacion == 4 %}⭐⭐⭐⭐{% else %}⭐⭐⭐⭐⭐{% endif %}
+                                </span>
+                            </div>
+                            <span class="text-muted small">{{ val.fecha_valoracion|date:"d M Y" }}</span>
+                        </div>
+                        <p class="text-secondary small mb-0">{{ val.comentario|default:"El usuario no ha dejado ningún comentario escrito." }}</p>
+                    </div>
+                {% empty %}
+                    <p class="text-muted fst-italic small py-3">Nadie ha valorado este artículo todavía. ¡Sé el primero en compartir tu opinión!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

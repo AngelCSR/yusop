@@ -1,5 +1,5 @@
 from pathlib import Path
-import os # Añadimos esto para manejar rutas de carpetas
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -17,7 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core', # Tu aplicación principal
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -35,7 +35,6 @@ ROOT_URLCONF = 'tienda_yusop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # MODIFICADO: Ahora Django buscará tus HTML en la carpeta raíz /templates
         'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
@@ -51,7 +50,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tienda_yusop.wsgi.application'
 
-# Database - Configurada correctamente para MySQL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -70,22 +68,33 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization - MODIFICADO a Español
 LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-# Añadimos la ruta física para la carpeta static en la raíz
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# Configuración de Archivos Media (Fotos de perfil, productos, etc.)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Configuración del modelo de Usuario personalizado
 AUTH_USER_MODEL = 'core.Usuario'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CONFIGURACIÓN DE CORREO REAL (SMTP Gmail)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Aquí pones el correo que te acabas de crear
+EMAIL_HOST_USER = 'yusopInfo@gmail.com' 
+
+# Aquí pegas la contraseña de 16 letras (sin espacios) que te dio Google
+EMAIL_HOST_PASSWORD = 'cjzf nowz fako nugb' 
+
+DEFAULT_FROM_EMAIL = 'yusopInfo@gmail.com'
+
+LOGIN_URL = 'login'
