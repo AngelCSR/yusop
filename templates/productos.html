@@ -4,50 +4,53 @@
 {% block title %}Productos - Yusop{% endblock %}
 
 {% block content %}
-<header class="hero-background-market text-center">
-  <h1 class="display-5 fw-bold text-success mt-3">Productos</h1>
-  <p class="lead text-dark fw-bold">Explora todos nuestros productos y apoya a los comercios locales.</p>
+<header class="hero-background-market">
+    <div class="header-content text-center">
+        <h1 class="display-5 fw-bold text-success" style="margin-top: 100px;">Productos</h1>
+        <p class="lead text-dark fw-normal">Explora todos nuestros productos y apoya a los comercios locales.</p>
 
-  <div class="search-wrapper px-3 mt-4">
-      <form action="{% url 'productos' %}" method="GET">
-        <div class="input-group input-group-lg shadow-sm">
-            <input type="text" name="q" value="{{ query }}" class="form-control border-0" placeholder="Buscar en el catálogo de productos...">
-            <button type="submit" class="btn btn-custom-success fw-bold">Buscar</button>
+        <div class="search-wrapper px-3 mt-4">
+            <form action="{% url 'productos' %}" method="GET">
+                
+                <div class="input-group input-group-lg shadow-sm">
+                    <input type="text" name="q" value="{{ query }}" class="form-control border-0" placeholder="Buscar en el catálogo de productos...">
+                    <button type="submit" class="btn btn-custom-success fw-bold">Buscar</button>
+                </div>
+
+                <div class="card border-0 shadow-sm bg-light mt-3 text-start" style="border-radius: 15px;">
+                    <div class="card-body p-3 px-4">
+                        <div class="row g-3 align-items-end">
+                            
+                            <div class="col-md-3 col-6">
+                                <label class="form-label small text-muted mb-1 fw-bold">Precio Mín (€)</label>
+                                <input type="number" name="min_precio" value="{{ min_precio }}" class="form-control form-control-sm border-0 shadow-sm" placeholder="Ej: 5">
+                            </div>
+                            
+                            <div class="col-md-3 col-6">
+                                <label class="form-label small text-muted mb-1 fw-bold">Precio Máx (€)</label>
+                                <input type="number" name="max_precio" value="{{ max_precio }}" class="form-control form-control-sm border-0 shadow-sm" placeholder="Ej: 50">
+                            </div>
+                            
+                            <div class="col-md-3 col-6">
+                                <label class="form-label small text-muted mb-1 fw-bold">Valoración</label>
+                                <select name="estrellas" class="form-select form-select-sm border-0 shadow-sm">
+                                    <option value="">Cualquiera</option>
+                                    <option value="4" {% if estrellas == '4' %}selected{% endif %}>4+ Estrellas ⭐</option>
+                                    <option value="3" {% if estrellas == '3' %}selected{% endif %}>3+ Estrellas ⭐</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-3 col-6 d-flex flex-column align-items-start justify-content-end">
+                                <a href="{% url 'productos' %}" class="btn btn-sm btn-outline-secondary w-100 shadow-sm" style="border-radius: 20px;">Limpiar filtros</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
         </div>
-
-          <div class="card border-0 shadow-sm bg-light mt-3 text-start" style="border-radius: 15px;">
-              <div class="card-body p-3 px-4">
-                  <div class="row g-3 align-items-end">
-                      
-                      <div class="col-md-3 col-6">
-                          <label class="form-label small text-muted mb-1 fw-bold">Precio Mín (€)</label>
-                          <input type="number" name="min_precio" value="{{ min_precio }}" class="form-control form-control-sm border-0 shadow-sm" placeholder="Ej: 5">
-                      </div>
-                      
-                      <div class="col-md-3 col-6">
-                          <label class="form-label small text-muted mb-1 fw-bold">Precio Máx (€)</label>
-                          <input type="number" name="max_precio" value="{{ max_precio }}" class="form-control form-control-sm border-0 shadow-sm" placeholder="Ej: 50">
-                      </div>
-                      
-                      <div class="col-md-3 col-6">
-                          <label class="form-label small text-muted mb-1 fw-bold">Valoración</label>
-                          <select name="estrellas" class="form-select form-select-sm border-0 shadow-sm">
-                              <option value="">Cualquiera</option>
-                              <option value="4" {% if estrellas == '4' %}selected{% endif %}>4+ Estrellas ⭐</option>
-                              <option value="3" {% if estrellas == '3' %}selected{% endif %}>3+ Estrellas ⭐</option>
-                          </select>
-                      </div>
-                      
-                      <div class="col-md-3 col-6 d-flex flex-column align-items-start justify-content-end">
-                          <a href="{% url 'productos' %}" class="btn btn-sm btn-outline-secondary w-100 shadow-sm" style="border-radius: 20px;">Limpiar filtros</a>
-                      </div>
-                      
-                  </div>
-              </div>
-          </div>
-          
-      </form>
-  </div>
+    </div>
 </header>
 
 <section class="container overlap-section mb-5">

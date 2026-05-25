@@ -19,10 +19,10 @@
     {% include 'includes/navbar.html' %}
 
     {% if messages %}
-        <div class="container position-fixed start-50 translate-middle-x mt-5 pt-3" style="z-index: 1100; top: 0;">
+        <div class="container mt-3 position-relative" style="z-index: 1050;">
             {% for message in messages %}
-                <div class="alert alert-success alert-dismissible fade show shadow-lg" role="alert">
-                    <strong>{{ message }}</strong>
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% else %}alert-success{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                 </div>
             {% endfor %}

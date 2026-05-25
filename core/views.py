@@ -214,7 +214,7 @@ def registro(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "¡Cuenta creada con éxito! Bienvenido a Yusop.")
+            messages.success(request, "¡Cuenta creada con éxito! Bienvenido a yusop.")
             return redirect('home')
         else:
             messages.error(request, "Error al crear la cuenta. Revisa los datos.")
@@ -493,17 +493,18 @@ def mis_pedidos(request):
 
 @login_required
 def cambiar_estado_pedido(request, id_pedido, estado):
-    pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
+    pedido = get_object_or_404(Pedido, id=id_pedido)
     
     if not DetallePedido.objects.filter(id_pedido=pedido, id_producto__tienda__usuario=request.user).exists():
-        return redirect('perfil')
+        # CORRECCIÓN 2: Si alguien intenta hacer trampa, lo devolvemos a 'mis_pedidos'
+        return redirect('mis_pedidos')
 
     if estado in ['pendiente', 'enviado', 'completado']:
         pedido.estado_pedido = estado
         pedido.save()
-        messages.success(request, f"Pedido actualizado a {estado}.")
+        messages.success(request, f"El estado del pedido #{pedido.id} se ha actualizado a '{estado}'.")
 
-    return redirect('perfil')
+    return redirect('mis_pedidos')
 
 @login_required
 def checkout(request):

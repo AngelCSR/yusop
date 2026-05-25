@@ -18,15 +18,21 @@
         {% if user.is_authenticated %}
         
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle text-warning" href="#" data-bs-toggle="dropdown">
+              <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
                 {{ user.username }}
               </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{% url 'perfil' %}">Mi Perfil</a></li>
-                <li><a class="dropdown-item" href="{% url 'mis_tiendas' %}">Mis Tiendas</a></li> <li><a class="dropdown-item" href="{% url 'mis_pedidos' %}">Mis Pedidos</a>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Cerrar Sesión</a></li>
-              </ul>
+              <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                {% if user.is_authenticated %}
+                    <li><a class="dropdown-item item-normal" href="{% url 'perfil' %}">Mi perfil</a></li>
+                    <li><a class="dropdown-item" href="{% url 'mis_tiendas' %}">Mis tiendas</a></li>
+                    <li><a class="dropdown-item item-normal" href="{% url 'mis_pedidos' %}">Mis pedidos</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item item-salir" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                {% else %}
+                    <li><a class="dropdown-item item-normal" href="{% url 'login' %}">Iniciar sesión</a></li>
+                    <li><a class="dropdown-item item-normal" href="{% url 'registro' %}">Registrarse</a></li>
+                {% endif %}
+            </ul>
             </li>
 
         {% else %}

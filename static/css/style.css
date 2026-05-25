@@ -78,19 +78,13 @@ body .btn-outline-success:hover {
    NAVBAR
    ========================================== */
 nav.navbar, 
-header .navbar,
-.dropdown-menu .dropdown-item {
+header .navbar {
     background-color: var(--primary-color);
 }
 
 .navbar .navbar-brand, 
-.navbar .nav-link, 
-.dropdown-menu .dropdown-item {
+.navbar .nav-link {
     color: #ffffff;
-}
-
-.dropdown-menu .dropdown-item:hover {
-    background-color: var(--secondary-color);
 }
 
 /* ==========================================
@@ -133,7 +127,7 @@ header .navbar,
 }
 
 .table-hover tbody tr:hover {
-    background-color: #f1f8fc; /* Azul muy clarito para que resalte al pasar el ratón */
+    background-color: #f1f8fc; 
 }
 
 .panel-body { 
@@ -155,7 +149,6 @@ header .navbar,
 /* ==========================================
    HERO / BANNER PRINCIPAL
    ========================================== */
-
 .hero-background-market {
     background-image: 
         linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.8) 75%, #ffffff 100%), 
@@ -225,7 +218,104 @@ footer {
 .search-wrapper .input-group-lg .form-control {
     padding-left: 25px;
 }
+
 .search-wrapper .input-group-lg .btn {
     padding-left: 25px;
     padding-right: 25px;
+}
+
+/* ==========================================
+   MENÚ DESPLEGABLE (CUENTA)
+   ========================================== */
+.dropdown-menu {
+    background-color: #ffffff;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* Añadida una sombra suave para que flote bien */
+}
+
+.dropdown-menu .dropdown-item {
+    color: #000000;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    background-color: transparent;
+}
+
+/* Hover para TODAS las opciones por defecto (Verde de la gama) */
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+    background-color: var(--secondary-color);
+    color: #ffffff;
+}
+
+/* Hover específico para cerrar sesión (Lila de la gama) */
+.dropdown-menu .item-salir:hover,
+.dropdown-menu .item-salir:focus {
+    background-color: var(--accent-pink);
+    color: #ffffff;
+}
+
+/* ==========================================
+   FORZAR EL AZUL BOOTSTRAP A NUESTRA GAMA
+   ========================================== */
+body .text-primary {
+    color: var(--primary-color) !important;
+}
+
+body .bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+body .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff;
+}
+
+body .btn-primary:hover {
+    background-color: #4a7ea8; /* Un tono un poco más oscuro para el hover */
+    border-color: #4a7ea8;
+    color: #ffffff;
+}
+
+body .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+body .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+/* ==========================================
+   FORZAR EL ROJO BOOTSTRAP A NUESTRO LILA
+   ========================================== */
+body .text-danger {
+    color: var(--accent-pink) !important;
+}
+
+body .bg-danger {
+    background-color: var(--accent-pink) !important;
+}
+
+body .btn-danger {
+    background-color: var(--accent-pink);
+    border-color: var(--accent-pink);
+    color: #ffffff;
+}
+
+body .btn-danger:hover {
+    background-color: #c070b4; /* Un tono un poquito más oscuro para el hover */
+    border-color: #c070b4;
+    color: #ffffff;
+}
+
+body .btn-outline-danger {
+    color: var(--accent-pink);
+    border-color: var(--accent-pink);
+}
+
+body .btn-outline-danger:hover {
+    background-color: var(--accent-pink);
+    color: #ffffff;
 }
