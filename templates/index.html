@@ -34,7 +34,7 @@
                     <p class="card-text text-muted">{{ producto.descripcion_producto|truncatechars:80 }}</p>
                     <p class="fw-bold text-success mb-2" id="precio">€{{ producto.precio_producto|floatformat:2 }}</p>
                     <div class="mt-auto">
-                        <a href="{% url 'detalle_producto' producto.id_producto %}" class="btn btn-success w-100">
+                        <a id="botonSecun" href="{% url 'detalle_producto' producto.id_producto %}" class="btn btn-success w-100">
                            Ver
                         </a>
                     </div>
@@ -65,7 +65,7 @@
                     <h5 class="card-title">{{ tienda.nombre_tienda }}</h5>
                     <p class="card-text text-muted">{{ tienda.descripcion_tienda|truncatechars:80 }}</p>
                     <div class="mt-auto">
-                        <a href="{% url 'ver_tienda' tienda.id_tienda %}" class="btn btn-success w-100">
+                        <a id="botonSecun" href="{% url 'ver_tienda' tienda.id_tienda %}" class="btn btn-success w-100">
                            Ver tienda
                         </a>
                     </div>
