@@ -72,6 +72,11 @@
     .card-tienda {
       transition: transform 0.2s;
     }
+      #precio {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #F5AF40 !important;
+    }
 
     .card-producto:hover,
     .card-tienda:hover {
@@ -134,7 +139,7 @@
             <h5 class="card-title">Producto 1</h5>
             <p class="card-text">Descripción breve del producto.</p>
             <div class="d-flex justify-content-between align-items-center">
-              <span class="fw-bold text-success">€12.99</span>
+              <span class="fw-bold text-success" id="precio">€12.99</span>
               <button class="btn btn-sm btn-outline-success" onclick="addToCart('Producto 1', 12.99)">Añadir</button>
 
             </div>
