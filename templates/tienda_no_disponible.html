@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Tienda no disponible{% endblock %}
+
+{% block content %}
+<div class="container text-center my-5">
+    
+   <h2 class="fw-bold text-dark mb-3">
+    Esta tienda ha sido retirada 
+</h2>
+
+    <p class="text-muted mb-4">
+        Puede que haya sido cerrada, desactivada o eliminada por el propietario.
+    </p>
+
+    <a href="{% url 'tiendas' %}" class="btn btn-custom-success fw-bold">
+        Volver a tiendas
+    </a>
+
+</div>
+{% endblock %}

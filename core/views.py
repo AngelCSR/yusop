@@ -362,10 +362,19 @@ def desactivar_producto(request, producto_id):
     return redirect('productos_tienda', tienda_id=tienda_id)
 
 def detalle_tienda(request, tienda_id):
-    tienda = get_object_or_404(Tienda, id=tienda_id, estado_tienda__in=['abierta', 'pausada'])
-    
-    productos = Producto.objects.filter(tienda=tienda, estado_producto='disponible')
-    
+    tienda = Tienda.objects.filter(
+        id=tienda_id,
+        estado_tienda__in=['abierta', 'pausada']
+    ).first()
+
+    if not tienda:
+        return render(request, 'tienda_no_disponible.html', status=404)
+
+    productos = Producto.objects.filter(
+        tienda=tienda,
+        estado_producto='disponible'
+    )
+
     return render(request, 'tienda_detalle.html', {
         'tienda': tienda,
         'productos': productos

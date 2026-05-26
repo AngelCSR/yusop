@@ -54,6 +54,7 @@
 </header>
 
 <section class="container overlap-section mb-5">
+
     {% if query %}
         <h4 class="fw-bold mb-4">Productos encontrados para "{{ query }}"</h4>
     {% endif %}
@@ -61,9 +62,16 @@
     <div class="row g-4" id="contenedorProductos">
         {% include "parcial_productos.html" %}
     </div>
+
+    
+    <div class="d-flex justify-content-center mt-5">
+        <ul class="pagination" id="pagination"></ul>
+    </div>
+
 </section>
 {% endblock %}
 
 {% block scripts %}
     <script src="{% static 'js/filtros.js' %}"></script>
+    <script src="{% static 'js/paginacion.js' %}"></script>
 {% endblock %}

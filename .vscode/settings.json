@@ -13,6 +13,7 @@
             "name": "YusopDB",
             "database": "bd_yusop",
             "username": "root",
+            "password": "24Ca59An",
             "askForPassword": true
         }
     ],

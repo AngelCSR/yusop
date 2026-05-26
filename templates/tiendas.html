@@ -19,7 +19,9 @@
 </header>
 
 <section class="container overlap-section mb-5">
+
     <div class="row g-4" id="listaTiendas">
+
         {% for tienda in tiendas %}
         <div class="col-md-4 card-tienda-wrapper">
             <div class="card card-tienda h-100 shadow-sm border-0" 
@@ -57,10 +59,18 @@
             <h4 class="text-muted fw-bold">Todavía no hay tiendas registradas en esta zona. ¡Sé el primero!</h4>
         </div>
         {% endfor %}
+
     </div>
+
+    
+    <div class="d-flex justify-content-center mt-5">
+        <ul class="pagination" id="paginationTiendas"></ul>
+    </div>
+
 </section>
 {% endblock %}
 
 {% block scripts %}
     <script src="{% static 'js/tiendas.js' %}"></script>
+    <script src="{% static 'js/paginacion.js' %}"></script>
 {% endblock %}

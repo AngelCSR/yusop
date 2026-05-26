@@ -11,7 +11,7 @@ class Usuario(AbstractUser):
     def avatar_url(self):
         if self.avatar_usuario and self.avatar_usuario.url:
             return self.avatar_usuario.url
-        return settings.STATIC_URL + 'img/avatar.png'
+        return settings.STATIC_URL + 'img/usuario_con_fondo_gris.png'
     
     ESTADO_CHOICES = [
         ('activo', 'Activo'),

@@ -17,6 +17,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(response => response.text())
                 .then(html => {
                     contenedor.innerHTML = html;
+
+                    
+                    document.dispatchEvent(new Event("productosActualizados"));
                 })
                 .catch(error => console.error('Error al filtrar:', error));
         });
