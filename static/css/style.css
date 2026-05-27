@@ -319,3 +319,116 @@ body .btn-outline-danger:hover {
     background-color: var(--accent-pink);
     color: #ffffff;
 }
+
+/* ==========================================
+   PAGINACIÓN PERSONALIZADA
+   ========================================== */
+
+.pagination {
+    gap: 6px;
+}
+
+/* cada item */
+.pagination .page-item .page-link {
+    color: var(--primary-color);
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+/* hover */
+.pagination .page-item .page-link:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(91, 149, 200, 0.25);
+}
+
+/* activo */
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(91, 149, 200, 0.35);
+}
+
+/* deshabilitado (Anterior / Siguiente) */
+.pagination .page-item.disabled .page-link {
+    color: #b5b5b5;
+    background-color: #f5f5f5;
+    border-color: #e6e6e6;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+.pagination .page-link:focus {
+    box-shadow: none;
+}
+
+
+/* ==========================================
+   PRECIOS EN COLOR DORADO
+   ========================================== */
+
+.card-producto .h5 {
+    color: var(--accent-orange) !important;
+}
+
+.card-producto .text-success.h5,
+.card-producto span.h5 {
+    color: var(--accent-orange) !important;
+}
+
+
+/* ==========================================
+   PRECIOS EN CARRITO (DORADO)
+   ========================================== */
+
+table .text-success {
+    color: var(--accent-orange) !important;
+}
+
+/* subtotal por producto */
+table td.text-success {
+    color: var(--accent-orange) !important;
+}
+
+/* total grande del resumen */
+.h3.fw-bold.text-dark {
+    color: var(--accent-orange) !important;
+}
+
+/* total label si quieres coherencia */
+.h5.fw-bold.text-dark {
+    color: var(--accent-orange) !important;
+}
+
+/* ==========================================
+   SOLO CARRITO
+   ========================================== */
+.carrito-page table td,
+.carrito-page table td span,
+.carrito-page table .badge {
+    color: #000 !important;
+}
+
+/* precios y números en negro */
+.carrito-page table td {
+    color: #000 !important;
+}
+
+/* palabra "Total:" negra */
+.carrito-page .h5.fw-bold.text-dark {
+    color: #000 !important;
+}
+
+/* número total en naranja */
+.carrito-page .total-amount {
+    color: var(--accent-orange) !important;
+}
